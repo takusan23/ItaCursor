@@ -36,10 +36,14 @@ namespace ItaCursor
             // Windows10のアクセントカラーに設定する
             ParentBorder.Background = new SolidColorBrush(WindowsAccentColor.GetAccentColor().GetValueOrDefault(Colors.Transparent));
 
+            // ウィンドウ状態を復元
+            WindowStateTool.RestoreWindowState(this);
+
             // ウィンドウハンドル取得のための
             Loaded += (s, e) =>
             {
                 var windowHandle = new WindowInteropHelper(this).Handle;
+
 
                 // 半透明にする設定？
                 if (Properties.Settings.Default.IsOpacity)
@@ -70,6 +74,12 @@ namespace ItaCursor
                     // リソース開放
                     virtualCursorWindow.Close();
                     mouseHook.UnhookWindowsHookEx();
+                };
+
+                Closing += (s, e) =>
+                {
+                    // ウィンドウ状態を保存
+                    WindowStateTool.SaveWindowState(this);
                 };
 
                 SizeChanged += (s, e) =>
@@ -106,11 +116,11 @@ namespace ItaCursor
             // クリックイベントを登録
             mouseHook.AddTouchRect(CreateRectFromControl(RightClickArea), () =>
             {
-               new Thread(() => WindowsAPITool.WindowsAPISendInputTool.SendClick(true)).Start();
+                new Thread(() => WindowsAPITool.WindowsAPISendInputTool.SendClick(true)).Start();
             });
             mouseHook.AddTouchRect(CreateRectFromControl(LeftClickArea), () =>
             {
-               new Thread(() => WindowsAPITool.WindowsAPISendInputTool.SendClick(false)).Start();
+                new Thread(() => WindowsAPITool.WindowsAPISendInputTool.SendClick(false)).Start();
             });
         }
 

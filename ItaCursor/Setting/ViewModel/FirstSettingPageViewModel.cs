@@ -47,18 +47,8 @@ namespace ItaCursor.Setting.ViewModel
         }
 
         /// <summary>
-        /// クリック遅延
+        /// スクショ遅延
         /// </summary>
-        public int ClickDelayMs
-        {
-            get => Properties.Settings.Default.ClickDelayMs;
-            set
-            {
-                Properties.Settings.Default.ClickDelayMs = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
         public int ScreenShotDelayMs
         {
             get => Properties.Settings.Default.ScreenShotDelayMs;

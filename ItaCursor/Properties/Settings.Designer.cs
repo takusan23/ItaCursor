@@ -50,24 +50,60 @@ namespace ItaCursor.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int ClickDelayMs {
-            get {
-                return ((int)(this["ClickDelayMs"]));
-            }
-            set {
-                this["ClickDelayMs"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public int ScreenShotDelayMs {
             get {
                 return ((int)(this["ScreenShotDelayMs"]));
             }
             set {
                 this["ScreenShotDelayMs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int LastWindowPosX {
+            get {
+                return ((int)(this["LastWindowPosX"]));
+            }
+            set {
+                this["LastWindowPosX"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int LastWindowPosY {
+            get {
+                return ((int)(this["LastWindowPosY"]));
+            }
+            set {
+                this["LastWindowPosY"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int LastWindowHeight {
+            get {
+                return ((int)(this["LastWindowHeight"]));
+            }
+            set {
+                this["LastWindowHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int LastWindowWidth {
+            get {
+                return ((int)(this["LastWindowWidth"]));
+            }
+            set {
+                this["LastWindowWidth"] = value;
             }
         }
     }

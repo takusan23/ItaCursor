@@ -1,11 +1,12 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using ItaCursor.Setting;
-using ItaCursor.ToolWindow;
-using System.Linq;
-using System.Windows.Interop;
-using System.Threading;
+﻿using ItaCursor.Setting;
 using ItaCursor.Tool;
+using ItaCursor.ToolWindow;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace ItaCursor
@@ -124,14 +125,18 @@ namespace ItaCursor
             });
         }
 
-
         /// <summary>
-        /// Controlからスクリーン座標な四角形を返す
+        /// Controlからスクリーン座標な四角形を返す。拡大率に対応済み
         /// </summary>
         private Rect CreateRectFromControl(Decorator control)
         {
+            // ディスプレイの拡大率の取得。マウスポインタの座標にあるディスプレイの拡大率
+            WindowsAPI.WindowsAPICursor.POINT _currentCursorPos;
+            WindowsAPI.WindowsAPICursor.GetCursorPos(out _currentCursorPos);
+            var percent = WindowsAPITool.WindowsAPIGetDpiForMonitorTool.GetMonitorScalePercentFromPoint(new Point(_currentCursorPos.X, _currentCursorPos.Y)) / 100f;
+            // 拡大率をかけて返す
             var point = control.PointToScreen(new Point(0, 0));
-            return new Rect(point.X, point.Y, control.ActualWidth, control.ActualHeight);
+            return new Rect(point.X, point.Y, control.ActualWidth * percent, control.ActualHeight*percent);
         }
 
         /// <summary>

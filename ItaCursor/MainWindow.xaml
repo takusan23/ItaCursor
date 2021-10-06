@@ -11,7 +11,7 @@
         AllowsTransparency="True"
         Title="MainWindow" Height="300" Width="300">
 
-    <Border x:Name="ParentBorder" Padding="2" Background="#bbdefb" BorderThickness="1,1,1,1">
+    <Border x:Name="ParentBorder" Padding="2" Background="#bbdefb" BorderBrush="Transparent" BorderThickness="1,1,1,1">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>

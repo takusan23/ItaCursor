@@ -150,34 +150,9 @@ namespace ItaCursor.WindowsAPITool
             var touchPosX = mouseHookStruct.pt.x;
             var touchPosY = mouseHookStruct.pt.y;
 
+
             // クリックがWindowsAPISendInputTool#SendClick()で行われたものかどうか
             var isClickFromAPICall = mouseHookStruct.dwExtraInfo == WindowsAPISendInputTool.MOUSE_CLICK_EXTRA_INFO;
-
-            //  Debug.WriteLine($"{wParam.ToInt32()}");
-
-
-            /*            if (wParam.ToInt32() == WindowsAPISetWindowsHookEx.WM_LBUTTONDOWN)
-                        {
-
-                            // カーソル位置そのままでクリックイベントを他で受け取るやつを用意
-                            Debug.WriteLine("位置 X={0} Y={1}", touchPosX, touchPosY);
-
-                            foreach (var contains in touchRectList)
-                            {
-                                if (contains.Key.Contains(touchPosX, touchPosY))
-                                {
-                                    Debug.WriteLine("Control X={0} Y={1}", contains.Key.Left, contains.Key.Top);
-                                    contains.Value.Invoke();
-                                }
-                            }
-
-                        }
-                        else
-                        {
-                            Debug.WriteLine("なぞ");
-                            // なぜか else ブロックがないと動かなくなる。まじでなんで？
-                        }
-            */
 
             if (isClickFromAPICall)
             {
@@ -244,7 +219,6 @@ namespace ItaCursor.WindowsAPITool
                     break;
                 case WindowsAPISetWindowsHookEx.WM_LBUTTONUP:
                     // 離したとき
-                    Debug.WriteLine("はなした");
                     isDragging = false;
                     isClicked = false;
                     break;

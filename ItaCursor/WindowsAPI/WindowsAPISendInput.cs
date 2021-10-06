@@ -96,10 +96,12 @@ namespace ItaCursor.WindowsAPI
         public const int MOUSEEVENTF_LEFTDOWN = 0x0002;
 
         public const int MOUSEEVENTF_LEFTUP = 0x00004;
-        
+
         public const int MOUSEEVENTF_RIGHTDOWN = 0x0008;
 
         public const int MOUSEEVENTF_RIGHTUP = 0x0010;
+
+        public const int MOUSEEVENTF_WHEEL = 0x0800;
 
     }
 }

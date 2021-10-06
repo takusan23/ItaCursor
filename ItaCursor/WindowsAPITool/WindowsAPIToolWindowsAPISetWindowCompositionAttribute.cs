@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Windows;
 
 namespace ItaCursor.WindowsAPITool
 {
@@ -12,13 +10,17 @@ namespace ItaCursor.WindowsAPITool
         /// ウィンドウを半透明にしてアクリル効果（ぼかし）をつける
         /// </summary>
         /// <param name="windowHandle">ウィンドウハンドル</param>
-        public static void SetWindowAcryilc(IntPtr windowHandle)
+        /// <param name="isEnable">有効にする際はtrue</param>
+        public static void SetWindowAcryilc(IntPtr windowHandle, bool isEnable = true)
         {
             var accent = new WindowsAPI.WindowsAPISetWindowCompositionAttribute.AccentPolicy();
             var accentStructSize = Marshal.SizeOf(accent);
-            accent.AccentState = WindowsAPI.WindowsAPISetWindowCompositionAttribute.AccentState.ACCENT_ENABLE_BLURBEHIND;
-            accent.AccentFlags = 2;
-            accent.GradientColor = 0x7FFFFFFF;
+            if (isEnable)
+            {
+                accent.AccentState = WindowsAPI.WindowsAPISetWindowCompositionAttribute.AccentState.ACCENT_ENABLE_BLURBEHIND;
+                accent.AccentFlags = 2;
+                accent.GradientColor = 0x7FFFFFFF;
+            }
 
             var accentPtr = Marshal.AllocHGlobal(accentStructSize);
             Marshal.StructureToPtr(accent, accentPtr, false);

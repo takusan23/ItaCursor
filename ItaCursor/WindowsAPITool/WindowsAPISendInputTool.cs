@@ -112,5 +112,24 @@ namespace ItaCursor.WindowsAPITool
             }
         }
 
+
+        /// <summary>
+        /// スクロールイベントを送信する。
+        /// </summary>
+        /// <param name="scrollCount">正の値で上スクロール、負の値で下スクロールです</param>
+        public static void SendScroll(int scrollCount)
+        {
+            var mouseInputList = new WindowsAPI.WindowsAPISendInput.Input[2];
+            mouseInputList[0] = new WindowsAPI.WindowsAPISendInput.Input();
+            mouseInputList[0].Type = WindowsAPI.WindowsAPISendInput.INPUT_MOUSE;
+            mouseInputList[0].ui = new WindowsAPI.WindowsAPISendInput.InputUnion();
+            mouseInputList[0].ui.Mouse.X = 0;
+            mouseInputList[0].ui.Mouse.Y = 0;
+            mouseInputList[0].ui.Mouse.Flags = WindowsAPI.WindowsAPISendInput.MOUSEEVENTF_WHEEL;
+            mouseInputList[0].ui.Mouse.Data = 120 * scrollCount; // 120 をかける
+            mouseInputList[0].ui.Mouse.ExtraInfo = MOUSE_CLICK_EXTRA_INFO;
+            WindowsAPI.WindowsAPISendInput.SendInput(mouseInputList.Length, mouseInputList, Marshal.SizeOf(mouseInputList[0]));
+        }
+
     }
 }

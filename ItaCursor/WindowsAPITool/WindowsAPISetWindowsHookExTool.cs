@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 
@@ -43,6 +42,11 @@ namespace ItaCursor.WindowsAPITool
         private bool isClicked = false;
 
         /// <summary>
+        /// スクロール操作中ならtrue
+        /// </summary>
+        private bool isScrolling = false;
+
+        /// <summary>
         /// カーソル位置を入れておくやつ
         /// </summary>
         private WindowsAPICursor.POINT _currentCursorPos;
@@ -53,9 +57,19 @@ namespace ItaCursor.WindowsAPITool
         private Point diffCursorTouchPos = new Point(0, 0);
 
         /// <summary>
+        /// スクロール時に前回のスクロールとの差分を持っておくための
+        /// </summary>
+        private Point diffScrollTouchPos = new Point(0, 0);
+
+        /// <summary>
         /// カーソル操作エリア
         /// </summary>
         private Rect trackPadAreaRect = new Rect(0, 0, 0, 0);
+
+        /// <summary>
+        /// スクロールバーエリア
+        /// </summary>
+        private Rect scrollAreaRect = new Rect(0, 0, 0, 0);
 
         /// <summary>
         /// SetWindowHookEx経由でタッチイベントがほしいときに使う。
@@ -87,6 +101,12 @@ namespace ItaCursor.WindowsAPITool
         /// </summary>
         /// <param name="rect"></param>
         public void SetTrackPadRectArea(Rect rect) => trackPadAreaRect = rect;
+
+        /// <summary>
+        /// スクロールバーエリアを設定する
+        /// </summary>
+        /// <param name="rect"></param>
+        public void SetScrollBarRectArea(Rect rect) => scrollAreaRect = rect;
 
         /// <summary>
         /// アプリケーション終了時に呼んでください。フックを解除します。
@@ -123,8 +143,6 @@ namespace ItaCursor.WindowsAPITool
         /// <param name="action">押したときに呼ばれます。</param>
         public void AddTouchRect(Rect rect, Action action) => touchRectList.Add(rect, action);
 
-        bool test = false;
-
         /// <summary>
         /// マウス操作時によばれる
         /// 
@@ -150,7 +168,6 @@ namespace ItaCursor.WindowsAPITool
             var touchPosX = mouseHookStruct.pt.x;
             var touchPosY = mouseHookStruct.pt.y;
 
-
             // クリックがWindowsAPISendInputTool#SendClick()で行われたものかどうか
             var isClickFromAPICall = mouseHookStruct.dwExtraInfo == WindowsAPISendInputTool.MOUSE_CLICK_EXTRA_INFO;
 
@@ -173,12 +190,6 @@ namespace ItaCursor.WindowsAPITool
                 }
             }
 
-            // ほかウィンドウ（音量調節とか設定画面）にはタッチイベントを渡す
-            if (GetWindowRectListFromCurrentApp().Exists((rect) => rect.Contains(touchPosY, touchPosY)))
-            {
-                // return WindowsAPISetWindowsHookEx.CallNextHookEx(hookId, nCode, wParam, lParam);
-            }
-
             // Debug.WriteLine("位置 X={0} Y={1}", touchPosX, touchPosY);
             // Debug.WriteLine("トラックパッド X={0} Y={1}", windowRect.Left, windowRect.Top);
             // Debug.WriteLine("範囲内：{0}", windowRect.Contains(new Point(touchPosX, touchPosY)));
@@ -186,6 +197,32 @@ namespace ItaCursor.WindowsAPITool
             // Debug.WriteLine("----");
 
             // Debug.WriteLine(isTouchingTrackPadWindow);
+
+            // スクロールバーエリアを操作した場合
+            if (scrollAreaRect.Contains(touchPosX, touchPosY))
+            {
+                switch (wParam.ToInt32())
+                {
+                    case WindowsAPISetWindowsHookEx.WM_MOUSEMOVE:
+                        if (isScrolling)
+                        {
+                            // 移動中。差分を見る
+                            var draggingMousePointerPosX = mouseHookStruct.pt.x - (int)diffScrollTouchPos.X;
+                            var draggingMousePointerPosY = mouseHookStruct.pt.y - (int)diffScrollTouchPos.Y;
+                            // スクロールする
+                            Debug.WriteLine(draggingMousePointerPosY);
+                        }
+                        // 一番最初。マウスポインタの位置を保存しておく
+                        WindowsAPICursor.GetCursorPos(out _currentCursorPos);
+                        diffScrollTouchPos = new Point(_currentCursorPos.X, _currentCursorPos.Y);
+                        isScrolling = true;
+                        break;
+                    case WindowsAPISetWindowsHookEx.WM_LBUTTONUP:
+                        isScrolling = false;
+                        break;
+                }
+            }
+
 
             switch (wParam.ToInt32())
             {

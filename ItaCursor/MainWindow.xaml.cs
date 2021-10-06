@@ -56,6 +56,10 @@ namespace ItaCursor
                 if (Properties.Settings.Default.IsAcryilc)
                 {
                     WindowsAPITool.WindowsAPIToolWindowsAPISetWindowCompositionAttribute.SetWindowAcryilc(windowHandle);
+                    // 移動中はアクリル効果を切る
+                    AppBar.MouseLeftButtonDown += (s, e) => { WindowsAPITool.WindowsAPIToolWindowsAPISetWindowCompositionAttribute.SetWindowAcryilc(windowHandle, false); };
+                    // 離したら戻す。なぜかAppBarではMouseUpが拾えない
+                    ParentBorder.MouseLeftButtonUp += (s, e) => { WindowsAPITool.WindowsAPIToolWindowsAPISetWindowCompositionAttribute.SetWindowAcryilc(windowHandle, true); };
                 }
 
                 // TopMost
@@ -68,6 +72,7 @@ namespace ItaCursor
 
                 // 範囲を設定
                 SetTrackPadArea();
+                SetScrollBarArea();
                 SetClickButtonArea();
 
                 Closed += (s, e) =>
@@ -87,6 +92,7 @@ namespace ItaCursor
                 {
                     // サイズ変更した
                     SetTrackPadArea();
+                    SetScrollBarArea();
                     SetClickButtonArea();
                 };
 
@@ -94,8 +100,13 @@ namespace ItaCursor
                 {
                     // ウィンドウ移動した
                     SetTrackPadArea();
+                    SetScrollBarArea();
                     SetClickButtonArea();
                 };
+
+                // ウィンドウを移動できるように
+                AppBar.MouseLeftButtonDown += (s, e) => { DragMove(); };
+
             };
 
         }
@@ -104,6 +115,11 @@ namespace ItaCursor
         /// WindowsAPISetWindowsHookExToolにトラックパッドの範囲を設定する
         /// </summary>
         private void SetTrackPadArea() => mouseHook.SetTrackPadRectArea(CreateRectFromControl(TouchPadArea));
+
+        /// <summary>
+        /// スクロールバーの範囲を設定する
+        /// </summary>
+        private void SetScrollBarArea() => mouseHook.SetScrollBarRectArea(CreateRectFromControl(ScrollArea));
 
         /// <summary>
         /// WindowsAPISetWindowsHookExToolにカーソルそのままクリックイベントをもらうやつを設定する。
@@ -136,15 +152,7 @@ namespace ItaCursor
             var percent = WindowsAPITool.WindowsAPIGetDpiForMonitorTool.GetMonitorScalePercentFromPoint(new Point(_currentCursorPos.X, _currentCursorPos.Y)) / 100f;
             // 拡大率をかけて返す
             var point = control.PointToScreen(new Point(0, 0));
-            return new Rect(point.X, point.Y, control.ActualWidth * percent, control.ActualHeight*percent);
-        }
-
-        /// <summary>
-        /// 移動できるように
-        /// </summary>
-        private void AppBar_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            DragMove();
+            return new Rect(point.X, point.Y, control.ActualWidth * percent, control.ActualHeight * percent);
         }
 
         /// <summary>

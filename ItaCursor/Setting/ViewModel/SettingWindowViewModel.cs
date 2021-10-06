@@ -5,7 +5,7 @@ namespace ItaCursor.Setting.ViewModel
 {
     class SettingWindowViewModel
     {
-        public ViewModelValueChanged<string> NavigationPath { get; set; } = new ViewModelValueChanged<string>("SettingPage/FirstSettingPage.xaml");
+        public ValueChanged<string> NavigationPath { get; set; } = new ValueChanged<string>("SettingPage/FirstSettingPage.xaml");
 
         public ICommand ToFirstSettingScreen { get; set; }
 

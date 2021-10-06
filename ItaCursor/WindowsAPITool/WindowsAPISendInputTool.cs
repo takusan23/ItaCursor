@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -119,7 +118,7 @@ namespace ItaCursor.WindowsAPITool
         /// <param name="scrollCount">正の値で上スクロール、負の値で下スクロールです</param>
         public static void SendScroll(int scrollCount)
         {
-            var mouseInputList = new WindowsAPI.WindowsAPISendInput.Input[2];
+            var mouseInputList = new WindowsAPI.WindowsAPISendInput.Input[1];
             mouseInputList[0] = new WindowsAPI.WindowsAPISendInput.Input();
             mouseInputList[0].Type = WindowsAPI.WindowsAPISendInput.INPUT_MOUSE;
             mouseInputList[0].ui = new WindowsAPI.WindowsAPISendInput.InputUnion();

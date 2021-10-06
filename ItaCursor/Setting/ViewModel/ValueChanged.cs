@@ -7,7 +7,7 @@ namespace ItaCursor.Setting.ViewModel
     /// AndroidのLiveDataみたいなやつ？INotifyPropertyChangedを使えば ViewModel -> View の通知が飛ばせるらしい。
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    class ViewModelValueChanged<T> : INotifyPropertyChanged
+    class ValueChanged<T> : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged([CallerMemberName] string propertyName = null)
@@ -26,7 +26,7 @@ namespace ItaCursor.Setting.ViewModel
             }
         }
 
-        public ViewModelValueChanged(T value)
+        public ValueChanged(T value)
         {
             _value = value;
         }

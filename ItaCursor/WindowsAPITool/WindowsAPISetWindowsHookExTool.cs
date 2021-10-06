@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 
@@ -198,30 +199,6 @@ namespace ItaCursor.WindowsAPITool
 
             // Debug.WriteLine(isTouchingTrackPadWindow);
 
-            // スクロールバーエリアを操作した場合
-            if (scrollAreaRect.Contains(touchPosX, touchPosY))
-            {
-                switch (wParam.ToInt32())
-                {
-                    case WindowsAPISetWindowsHookEx.WM_MOUSEMOVE:
-                        if (isScrolling)
-                        {
-                            // 移動中。差分を見る
-                            var draggingMousePointerPosX = mouseHookStruct.pt.x - (int)diffScrollTouchPos.X;
-                            var draggingMousePointerPosY = mouseHookStruct.pt.y - (int)diffScrollTouchPos.Y;
-                            // スクロールする
-                            Debug.WriteLine(draggingMousePointerPosY);
-                        }
-                        // 一番最初。マウスポインタの位置を保存しておく
-                        WindowsAPICursor.GetCursorPos(out _currentCursorPos);
-                        diffScrollTouchPos = new Point(_currentCursorPos.X, _currentCursorPos.Y);
-                        isScrolling = true;
-                        break;
-                    case WindowsAPISetWindowsHookEx.WM_LBUTTONUP:
-                        isScrolling = false;
-                        break;
-                }
-            }
 
 
             switch (wParam.ToInt32())
@@ -232,6 +209,27 @@ namespace ItaCursor.WindowsAPITool
                         // 範囲内の場合は押す
                         touchRectList.Where((dic) => dic.Key.Contains(touchPosX, touchPosY)).ToList().ForEach((dic) => dic.Value.Invoke());
                         isClicked = true;
+                    }
+                    if (scrollAreaRect.Contains(touchPosX, touchPosY) || isScrolling)
+                    {
+                        // スクロールバー範囲内の場合
+                        if (isScrolling)
+                        {
+                            // 移動中。差分を見る
+                            var draggingScrollDiffY = touchPosY - (int)diffScrollTouchPos.Y;
+                            // 10以上は異常なので無視
+                            if (Math.Abs(draggingScrollDiffY) < 10)
+                            {
+                                // スクロールする
+                                new Thread(() =>
+                                {
+                                    WindowsAPISendInputTool.SendScroll(draggingScrollDiffY / 2); // 割らないとイキすぎ
+                                }).Start();
+                            }
+                        }
+                        // 一番最初 タッチ位置を保存しておく
+                        diffScrollTouchPos = new Point(touchPosX, touchPosY);
+                        isScrolling = true;
                     }
                     if (!isDragging)
                     {
@@ -258,6 +256,7 @@ namespace ItaCursor.WindowsAPITool
                     // 離したとき
                     isDragging = false;
                     isClicked = false;
+                    isScrolling = false;
                     break;
                 default:
                     break;

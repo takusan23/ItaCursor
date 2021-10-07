@@ -197,9 +197,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:ItaCursor"
+        "ProductName" = "8:いたかーそる"
         "ProductCode" = "8:{910B6A1F-F5B9-4A7D-B79B-C7B9867B9D0C}"
-        "PackageCode" = "8:{71E897C5-FF50-4388-AE5C-E4E5D56816DB}"
+        "PackageCode" = "8:{72570A14-295D-4839-87A7-FE24A8D5B5FD}"
         "UpgradeCode" = "8:{A167FCBF-7C99-4CA2-ABD6-3DE03BB052A6}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"

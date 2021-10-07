@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_07E9F652348C44CE9F7E945CA1276E38"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E392A0D12D4441F8B5302B21EE87EB9A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -116,6 +122,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_07E9F652348C44CE9F7E945CA1276E38"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\itacursor.ico"
+            "TargetName" = "8:itacursor.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_753D6DC48BB547709DB16BFA8CFA0800"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -173,7 +199,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:ItaCursor"
         "ProductCode" = "8:{910B6A1F-F5B9-4A7D-B79B-C7B9867B9D0C}"
-        "PackageCode" = "8:{A298410F-02C6-486C-BA9B-FCBD48795A56}"
+        "PackageCode" = "8:{71E897C5-FF50-4388-AE5C-E4E5D56816DB}"
         "UpgradeCode" = "8:{A167FCBF-7C99-4CA2-ABD6-3DE03BB052A6}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -190,7 +216,7 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:"
+        "ARPPRODUCTICON" = "8:_07E9F652348C44CE9F7E945CA1276E38"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -304,7 +330,7 @@
             "Target" = "8:_E392A0D12D4441F8B5302B21EE87EB9A"
             "Folder" = "8:_BB9A375A11494AD9B095AEBC18E3F134"
             "WorkingFolder" = "8:_753D6DC48BB547709DB16BFA8CFA0800"
-            "Icon" = "8:"
+            "Icon" = "8:_07E9F652348C44CE9F7E945CA1276E38"
             "Feature" = "8:"
             }
         }

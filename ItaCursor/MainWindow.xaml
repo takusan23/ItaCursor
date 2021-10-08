@@ -11,7 +11,7 @@
         AllowsTransparency="True"
         Title="いたかーそる" Height="300" Width="300">
 
-    <Border x:Name="ParentBorder" Padding="2" Background="#bbdefb" BorderBrush="Transparent" BorderThickness="1,1,1,1">
+    <Border x:Name="ParentBorder" Padding="2" Background="#bbdefb" BorderBrush="Transparent" BorderThickness="1,1,1,1" CornerRadius="10">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
@@ -39,7 +39,7 @@
                 </Border>
             </StackPanel>
             <Border Grid.Row="1" Grid.ColumnSpan="2" Name="TouchPadArea" Background="Transparent" BorderBrush="Black" BorderThickness="1" CornerRadius="10" />
-            <Border Grid.Row="1" Grid.ColumnSpan="2" Name="ScrollArea" Width="6" CornerRadius="3" HorizontalAlignment="Right" Margin="20,20,20,20" Background="Black"  />
+            <Border Grid.Row="1" Grid.ColumnSpan="2" Name="ScrollArea" Width="20" CornerRadius="3" HorizontalAlignment="Right" Margin="20,20,20,20" Background="Black"  />
             <Border Grid.Row="2" Grid.Column="0" Name="LeftClickArea" Margin="2,2,1,2" Background="Transparent" BorderBrush="Black" BorderThickness="1" CornerRadius="10" />
             <Border Grid.Row="2" Grid.Column="1" Name="RightClickArea" Margin="1,2,2,2" Background="Transparent" BorderBrush="Black" BorderThickness="1" CornerRadius="10" />
         </Grid>

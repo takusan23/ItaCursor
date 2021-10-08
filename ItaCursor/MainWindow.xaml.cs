@@ -56,6 +56,8 @@ namespace ItaCursor
                 if (Properties.Settings.Default.IsAcryilc)
                 {
                     WindowsAPITool.WindowsAPIToolWindowsAPISetWindowCompositionAttribute.SetWindowAcryilc(windowHandle);
+                    // 角丸使えないので戻す
+                    ParentBorder.CornerRadius = new CornerRadius(0);
                     // 移動中はアクリル効果を切る
                     AppBar.MouseLeftButtonDown += (s, e) => { WindowsAPITool.WindowsAPIToolWindowsAPISetWindowCompositionAttribute.SetWindowAcryilc(windowHandle, false); };
                     // 離したら戻す。なぜかAppBarではMouseUpが拾えない
@@ -106,7 +108,6 @@ namespace ItaCursor
 
                 // ウィンドウを移動できるように
                 AppBar.MouseLeftButtonDown += (s, e) => { DragMove(); };
-
             };
 
         }

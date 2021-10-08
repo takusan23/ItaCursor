@@ -59,6 +59,17 @@ namespace ItaCursor.Setting.ViewModel
             }
         }
 
+        public int WindowOpacityInt
+        {
+            get => (int)(Properties.Settings.Default.WindowOpacity * 100);
+            set
+            {
+                Properties.Settings.Default.WindowOpacity = value / 100f;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+
     }
 
 }

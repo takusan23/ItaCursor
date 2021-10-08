@@ -21,9 +21,12 @@
 
         <StackPanel Grid.Column="0">
             <CheckBox Margin="5" Content="ウィンドウを半透明にする" IsChecked="{Binding IsOpacity}" Name="OpacityCheckBox" />
-            <CheckBox Margin="5" Content="アクリル効果を利用する（半透明、ぼかし効果）" IsChecked="{Binding IsAcryilc}" IsEnabled="{Binding IsOpacity}" Name="AcrylicCheckBox" />
+            <CheckBox Margin="5" Content="アクリル効果を利用する（半透明、ぼかし効果。一部の環境では重くなりますので非推奨）" IsChecked="{Binding IsAcryilc}" IsEnabled="{Binding IsOpacity}" Name="AcrylicCheckBox" />
             <TextBlock Text="スクリーンショットするまでの遅延 (ms)" />
             <TextBox Margin="5" Text="{Binding ScreenShotDelayMs}" />
+            <TextBlock Text="透明度" />
+            <TextBlock Text="{Binding WindowOpacityInt}" />
+            <Slider Maximum="100" Minimum="0" Value="{Binding WindowOpacityInt}" />
         </StackPanel>
 
     </Grid>

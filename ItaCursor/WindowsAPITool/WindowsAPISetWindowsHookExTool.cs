@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 
@@ -80,6 +81,11 @@ namespace ItaCursor.WindowsAPITool
         /// 無効にしたい場合はどうぞ。
         /// </summary>
         public bool IsEnable = true;
+
+        /// <summary>
+        /// スクロールする関数呼びすぎると固まるので
+        /// </summary>
+        private int scrollInvokeLimitCount = 0;
 
 
         /// <summary>
@@ -218,11 +224,15 @@ namespace ItaCursor.WindowsAPITool
                         // 0は動きないので
                         if (draggingScrollDiffY != 0)
                         {
-                            var point = WindowsAPIGetWindowRectTool.GetWindowPos(virtualCursorWindowHandle);
+                            scrollInvokeLimitCount++;
                             var scroll = draggingScrollDiffY > 0 ? 1 : -1;
-                            WindowsAPIPostMessageTool.PostScroll((int)point.X, (int)point.Y, scroll);
-                            //   new Thread(() => { WindowsAPISendInputTool.SendScroll(draggingScrollDiffY); }).Start();
-                            //Debug.WriteLine("はい {0} {1}", scroll, touchPosY);
+                            // SendScroll（内部でSendInput）とそれを呼ぶスレッドを呼びすぎないようにする
+                            if (scrollInvokeLimitCount == 10)
+                            {
+                                new Thread(() => { WindowsAPISendInputTool.SendScroll(scroll); }).Start();
+                                scrollInvokeLimitCount = 0;
+                            }
+                            //  Debug.WriteLine("はい {0} {1}", scroll, 0);
                         }
                         diffScrollTouchPos = new Point(touchPosX, touchPosY);
                     }

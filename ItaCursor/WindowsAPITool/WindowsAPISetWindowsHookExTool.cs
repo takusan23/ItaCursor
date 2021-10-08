@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 
@@ -216,12 +215,14 @@ namespace ItaCursor.WindowsAPITool
                     if (isScrolling)
                     {
                         var draggingScrollDiffY = touchPosY - (int)diffScrollTouchPos.Y;
-                        // 10以上は異常なので無視
-                        if (Math.Abs(draggingScrollDiffY) < 10)
+                        // 0は動きないので
+                        if (draggingScrollDiffY != 0)
                         {
                             var point = WindowsAPIGetWindowRectTool.GetWindowPos(virtualCursorWindowHandle);
-                          //  new Thread(() => { WindowsAPISendInputTool.SendScroll(draggingScrollDiffY); }).Start();
-                         //   Debug.WriteLine("はい {0}", draggingScrollDiffY);
+                            var scroll = draggingScrollDiffY > 0 ? 1 : -1;
+                            WindowsAPIPostMessageTool.PostScroll((int)point.X, (int)point.Y, scroll);
+                            //   new Thread(() => { WindowsAPISendInputTool.SendScroll(draggingScrollDiffY); }).Start();
+                            //Debug.WriteLine("はい {0} {1}", scroll, touchPosY);
                         }
                         diffScrollTouchPos = new Point(touchPosX, touchPosY);
                     }

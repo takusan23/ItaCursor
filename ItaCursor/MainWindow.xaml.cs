@@ -30,6 +30,8 @@ namespace ItaCursor
         {
             InitializeComponent();
 
+            // WindowsAPITool.WindowsAPISendInputTool.SendScroll(-10);
+
             // カーソル用ウィンドウ表示
             virtualCursorWindow.Show();
 

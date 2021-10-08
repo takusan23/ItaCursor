@@ -80,7 +80,12 @@ namespace ItaCursor.WindowsAPITool
         /// <summary>
         /// 無効にしたい場合はどうぞ。
         /// </summary>
-        public bool IsEnable = true;
+        public bool IsEnable { get; set; } = true;
+
+        /// <summary>
+        /// 将来的にスクロール量を調整したいので
+        /// </summary>
+        public int ScrollValue { get; set; } = 1;
 
         /// <summary>
         /// スクロールする関数呼びすぎると固まるので
@@ -225,14 +230,14 @@ namespace ItaCursor.WindowsAPITool
                         if (draggingScrollDiffY != 0)
                         {
                             scrollInvokeLimitCount++;
-                            var scroll = draggingScrollDiffY > 0 ? 1 : -1;
+                            // 上にスクロールするのか下にスクロールするのか
+                            var scroll = draggingScrollDiffY > 0 ? ScrollValue : -ScrollValue;
                             // SendScroll（内部でSendInput）とそれを呼ぶスレッドを呼びすぎないようにする
                             if (scrollInvokeLimitCount == 10)
                             {
                                 new Thread(() => { WindowsAPISendInputTool.SendScroll(scroll); }).Start();
                                 scrollInvokeLimitCount = 0;
                             }
-                            //  Debug.WriteLine("はい {0} {1}", scroll, 0);
                         }
                         diffScrollTouchPos = new Point(touchPosX, touchPosY);
                     }

@@ -20,5 +20,17 @@ namespace ItaCursor.WindowsAPITool
             var currentCursorContainsWindow = WindowsAPI.WindowsAPIWindowFromPoint.WindowFromPoint(_currentCursorPos);
             return windowHandle == currentCursorContainsWindow;
         }
+
+        /// <summary>
+        /// 座標を渡してウィンドウハンドルをもらう関数
+        /// </summary>
+        /// <param name="x">X</param>
+        /// <param name="y">Y</param>
+        /// <returns>ウィンドウハンドル</returns>
+        public static IntPtr GetWindowHandleFromPos(int x, int y)
+        {
+            return WindowsAPI.WindowsAPIWindowFromPoint.WindowFromPoint(new(x, y));
+        }
+
     }
 }

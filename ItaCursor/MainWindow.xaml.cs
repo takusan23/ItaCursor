@@ -1,7 +1,6 @@
 ﻿using ItaCursor.Setting;
 using ItaCursor.Tool;
 using ItaCursor.ToolWindow;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows;

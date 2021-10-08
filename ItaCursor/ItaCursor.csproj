@@ -10,6 +10,7 @@
     <RootNamespace>ItaCursor</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationIcon>Resources\itacursor.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -22,6 +23,7 @@
 
   <ItemGroup>
     <None Remove="Resources\cursor.svg" />
+    <None Remove="Resources\itacursor.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +32,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\cursor.svg" />
+    <Resource Include="Resources\itacursor.ico" />
   </ItemGroup>
 
   <ItemGroup>

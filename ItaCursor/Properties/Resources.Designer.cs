@@ -69,5 +69,15 @@ namespace ItaCursor.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static byte[] itacursor {
+            get {
+                object obj = ResourceManager.GetObject("itacursor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

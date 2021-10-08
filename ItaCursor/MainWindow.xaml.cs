@@ -50,7 +50,7 @@ namespace ItaCursor
                 // 半透明にする設定？
                 if (Properties.Settings.Default.IsOpacity)
                 {
-                    Opacity = 0.5;
+                    Opacity = Properties.Settings.Default.WindowOpacity;
                 }
 
                 // アクリル効果をつける

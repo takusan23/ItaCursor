@@ -82,6 +82,11 @@ namespace ItaCursor.WindowsAPITool
         /// </summary>
         public bool IsEnable = true;
 
+        /// <summary>
+        /// スクロールする関数呼びすぎると固まるので
+        /// </summary>
+        private int scrollInvokeLimitCount = 0;
+
 
         /// <summary>
         /// コンストラクタ。アプリケーション終了時には「UnhookWindowsHookEx」を呼んでください。
@@ -168,7 +173,6 @@ namespace ItaCursor.WindowsAPITool
 
             var touchPosX = mouseHookStruct.pt.x;
             var touchPosY = mouseHookStruct.pt.y;
-
             // クリックがWindowsAPISendInputTool#SendClick()で行われたものかどうか
             var isClickFromAPICall = mouseHookStruct.dwExtraInfo == WindowsAPISendInputTool.MOUSE_CLICK_EXTRA_INFO;
 
@@ -179,84 +183,93 @@ namespace ItaCursor.WindowsAPITool
             }
 
             // トラックパッドに触れているか
-            var isTouchingTrackPad = trackPadAreaRect.Contains(new Point(touchPosX, touchPosY));
+            var isTouchingTrackPad = trackPadAreaRect.Contains(touchPosX, touchPosY);
+            // スクロールバーに触れているか
+            var isTouchingScrollBar = scrollAreaRect.Contains(touchPosX, touchPosY);
 
             // トラックパッドに触れてなくて、操作中でもない場合は何もせずreturn
-            if (!isTouchingTrackPad && !isDragging)
+            if (!isTouchingTrackPad && !(isDragging || isScrolling))
             {
                 // でもAddTouchRectクリック範囲内ならreturn許さない
-                if (!touchRectList.Any((dic) => dic.Key.Contains(touchPosX, touchPosY)))
+                var containsRectList = touchRectList.Where((dic) => dic.Key.Contains(touchPosX, touchPosY));
+                if (containsRectList.Count() == 0)
                 {
                     return WindowsAPISetWindowsHookEx.CallNextHookEx(hookId, nCode, wParam, lParam);
                 }
+                else if (!isClicked)
+                {
+                    // クリック範囲内なので押す
+                    foreach (var containsRect in containsRectList)
+                    {
+                        containsRect.Value.Invoke();
+                    }
+                    isClicked = true;
+                }
             }
-
-            // Debug.WriteLine("位置 X={0} Y={1}", touchPosX, touchPosY);
-            // Debug.WriteLine("トラックパッド X={0} Y={1}", windowRect.Left, windowRect.Top);
-            // Debug.WriteLine("範囲内：{0}", windowRect.Contains(new Point(touchPosX, touchPosY)));
-            // Debug.WriteLine("操作中：{0}", isDragging);
-            // Debug.WriteLine("----");
-
-            // Debug.WriteLine(isTouchingTrackPadWindow);
-
-
 
             switch (wParam.ToInt32())
             {
                 case WindowsAPISetWindowsHookEx.WM_MOUSEMOVE:
-                    if (!isClicked)
+                    // スクロールバー
+                    if (isTouchingScrollBar && !isScrolling)
                     {
-                        // 範囲内の場合は押す
-                        touchRectList.Where((dic) => dic.Key.Contains(touchPosX, touchPosY)).ToList().ForEach((dic) => dic.Value.Invoke());
-                        isClicked = true;
-                    }
-                    if (scrollAreaRect.Contains(touchPosX, touchPosY) || isScrolling)
-                    {
-                        // スクロールバー範囲内の場合
-                        if (isScrolling)
-                        {
-                            // 移動中。差分を見る
-                            var draggingScrollDiffY = touchPosY - (int)diffScrollTouchPos.Y;
-                            // 10以上は異常なので無視
-                            if (Math.Abs(draggingScrollDiffY) < 10)
-                            {
-                                // スクロールする
-                                new Thread(() =>
-                                {
-                                    WindowsAPISendInputTool.SendScroll(draggingScrollDiffY / 2); // 割らないとイキすぎ
-                                }).Start();
-                            }
-                        }
                         // 一番最初 タッチ位置を保存しておく
                         diffScrollTouchPos = new Point(touchPosX, touchPosY);
                         isScrolling = true;
                     }
-                    if (!isDragging)
+                    // 移動中。差分を見る
+                    if (isScrolling)
                     {
-                        // 一番最初。マウスポインタとの距離を保存しておく
-                        WindowsAPICursor.GetCursorPos(out _currentCursorPos);
-                        diffCursorTouchPos = new Point(_currentCursorPos.X - touchPosX, _currentCursorPos.Y - touchPosY);
-                        isDragging = true;
+                        var draggingScrollDiffY = touchPosY - (int)diffScrollTouchPos.Y;
+                        // 0は動きないので
+                        if (draggingScrollDiffY != 0)
+                        {
+                            scrollInvokeLimitCount++;
+                            var scroll = draggingScrollDiffY > 0 ? 1 : -1;
+                            // SendScroll（内部でSendInput）とそれを呼ぶスレッドを呼びすぎないようにする
+                            if (scrollInvokeLimitCount == 10)
+                            {
+                                new Thread(() => { WindowsAPISendInputTool.SendScroll(scroll); }).Start();
+                                scrollInvokeLimitCount = 0;
+                            }
+                            //  Debug.WriteLine("はい {0} {1}", scroll, 0);
+                        }
+                        diffScrollTouchPos = new Point(touchPosX, touchPosY);
                     }
-                    if (isDragging)
+
+                    // スクロール時以外はカーソル動かす
+                    if (!isScrolling)
                     {
-                        // 移動中。差分を足す
-                        var draggingMousePointerPosX = mouseHookStruct.pt.x + (int)diffCursorTouchPos.X;
-                        var draggingMousePointerPosY = mouseHookStruct.pt.y + (int)diffCursorTouchPos.Y;
-                        WindowsAPICursor.SetCursorPos(draggingMousePointerPosX, draggingMousePointerPosY);
-                        // 直接SetCursorPosで指定した値を入れてもいいんだけど、画面外の対応が面倒なので取得する
-                        WindowsAPICursor.GetCursorPos(out _currentCursorPos);
-                        WindowsAPISetWindowPosTool.SetWindowPos(virtualCursorWindowHandle, _currentCursorPos.X, _currentCursorPos.Y);
+                        if (!isDragging)
+                        {
+                            // 一番最初。マウスポインタとの距離を保存しておく
+                            WindowsAPICursor.GetCursorPos(out _currentCursorPos);
+                            diffCursorTouchPos = new Point(_currentCursorPos.X - touchPosX, _currentCursorPos.Y - touchPosY);
+                            isDragging = true;
+                        }
+                        if (isDragging)
+                        {
+                            // 移動中。差分を足す
+                            var draggingMousePointerPosX = touchPosX + (int)diffCursorTouchPos.X;
+                            var draggingMousePointerPosY = touchPosY + (int)diffCursorTouchPos.Y;
+                            WindowsAPICursor.SetCursorPos(draggingMousePointerPosX, draggingMousePointerPosY);
+                            // 直接SetCursorPosで指定した値を入れてもいいんだけど、画面外の対応が面倒なので取得する
+                            WindowsAPICursor.GetCursorPos(out _currentCursorPos);
+                            WindowsAPISetWindowPosTool.SetWindowPos(virtualCursorWindowHandle, _currentCursorPos.X, _currentCursorPos.Y);
+                        }
                     }
                     break;
                 case WindowsAPISetWindowsHookEx.WM_LBUTTONDOWN:
+                    Debug.WriteLine("WM_LBUTTONDOWN");
                     // WM_MOUSEMOVE に移管
                     break;
                 case WindowsAPISetWindowsHookEx.WM_LBUTTONUP:
+                    Debug.WriteLine("WM_LBUTTONUP");
                     // 離したとき
                     isDragging = false;
                     isClicked = false;
                     isScrolling = false;
+                    Debug.WriteLine("はなした");
                     break;
                 default:
                     break;

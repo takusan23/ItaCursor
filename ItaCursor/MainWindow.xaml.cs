@@ -1,6 +1,7 @@
 ﻿using ItaCursor.Setting;
 using ItaCursor.Tool;
 using ItaCursor.ToolWindow;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -29,8 +30,6 @@ namespace ItaCursor
         public MainWindow()
         {
             InitializeComponent();
-
-            // WindowsAPITool.WindowsAPISendInputTool.SendScroll(-10);
 
             // カーソル用ウィンドウ表示
             virtualCursorWindow.Show();
@@ -189,7 +188,13 @@ namespace ItaCursor
             new VolumeControlWindow().Show();
         }
 
-
-
+        /// <summary>
+        /// 有効、無効化ボタン
+        /// </summary>
+        private void EnableSwitch_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            mouseHook.IsEnable = !mouseHook.IsEnable;
+            EnableSwitchText.Text = mouseHook.IsEnable ? "\xeda4" : "\xf140";
+        }
     }
 }

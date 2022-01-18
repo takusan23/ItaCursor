@@ -25,7 +25,7 @@ namespace ItaCursor
         /// <summary>
         /// カーソル移動するやつ。SetWindowsHookExはここで呼んでる
         /// </summary>
-        private WindowsAPITool.WindowsAPISetWindowsHookExTool mouseHook;
+        public WindowsAPITool.WindowsAPISetWindowsHookExTool mouseHook { get; private set; }
 
         public MainWindow()
         {
@@ -37,14 +37,18 @@ namespace ItaCursor
             // Windows10のアクセントカラーに設定する
             ParentBorder.Background = new SolidColorBrush(WindowsAccentColor.GetAccentColor().GetValueOrDefault(Colors.Transparent));
 
-            // ウィンドウ状態を復元
-            WindowStateTool.RestoreWindowState(this);
-
             // ウィンドウハンドル取得のための
             Loaded += (s, e) =>
             {
                 var windowHandle = new WindowInteropHelper(this).Handle;
 
+                // 本命
+                mouseHook = new WindowsAPITool.WindowsAPISetWindowsHookExTool(windowHandle, new WindowInteropHelper(virtualCursorWindow).Handle);
+
+                // TopMost
+                WindowsAPITool.WindowsAPISetWindowPosTool.SetAlwaysTopWindow(windowHandle);
+                // このアプリを選択してもアクティブ状態にしない
+                WindowsAPITool.WindowsAPIWindowLongTool.SetDisableWindow(windowHandle);
 
                 // 半透明にする設定？
                 if (Properties.Settings.Default.IsOpacity)
@@ -64,18 +68,15 @@ namespace ItaCursor
                     ParentBorder.MouseLeftButtonUp += (s, e) => { WindowsAPITool.WindowsAPIToolWindowsAPISetWindowCompositionAttribute.SetWindowAcryilc(windowHandle, true); };
                 }
 
-                // TopMost
-                WindowsAPITool.WindowsAPISetWindowPosTool.SetAlwaysTopWindow(windowHandle);
-                // このアプリを選択してもアクティブ状態にしない
-                WindowsAPITool.WindowsAPIWindowLongTool.SetDisableWindow(windowHandle);
-
-                // 本命
-                mouseHook = new WindowsAPITool.WindowsAPISetWindowsHookExTool(windowHandle, new WindowInteropHelper(virtualCursorWindow).Handle);
-
                 // 範囲を設定
                 SetTrackPadArea();
                 SetScrollBarArea();
                 SetClickButtonArea();
+
+                // ウィンドウ状態を復元
+                WindowStateTool.RestoreWindowState(this);
+                // ボタンの高さとかを復元
+                ItaCursorStateDelegateTool.RestoreState(this);
 
                 Closed += (s, e) =>
                 {
@@ -88,6 +89,8 @@ namespace ItaCursor
                 {
                     // ウィンドウ状態を保存
                     WindowStateTool.SaveWindowState(this);
+                    // ボタンの高さとか保存
+                    ItaCursorStateDelegateTool.SaveState(this);
                 };
 
                 SizeChanged += (s, e) =>
@@ -110,6 +113,18 @@ namespace ItaCursor
                 AppBar.MouseLeftButtonDown += (s, e) => { DragMove(); };
             };
 
+        }
+
+        /// <summary>
+        /// タッチパネル操作を有効、無効にする
+        /// </summary>
+        /// <param name="IsEnable">有効にするならtrue</param>
+        public void SetTouchPadEnable(bool IsEnable)
+        {
+            mouseHook.IsEnable = IsEnable;
+            EnableSwitchText.Text = IsEnable ? "\xeda4" : "\xf140";
+            MouseClickGridSplitter.IsEnabled = !IsEnable;
+            TouchPadDisableText.Visibility = IsEnable ? Visibility.Hidden : Visibility.Visible;
         }
 
         /// <summary>
@@ -193,8 +208,7 @@ namespace ItaCursor
         /// </summary>
         private void EnableSwitch_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            mouseHook.IsEnable = !mouseHook.IsEnable;
-            EnableSwitchText.Text = mouseHook.IsEnable ? "\xeda4" : "\xf140";
+            SetTouchPadEnable(!mouseHook.IsEnable);
         }
     }
 }

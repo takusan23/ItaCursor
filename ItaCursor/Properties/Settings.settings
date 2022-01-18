@@ -26,5 +26,11 @@
     <Setting Name="WindowOpacity" Type="System.Single" Scope="User">
       <Value Profile="(Default)">0.5</Value>
     </Setting>
+    <Setting Name="IsTouchPadDisable" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="MouseButtonHeight" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

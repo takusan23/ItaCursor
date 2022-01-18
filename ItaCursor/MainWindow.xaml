@@ -16,6 +16,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -41,10 +42,14 @@
                     <TextBlock FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Red" Text="&#xe106;" FontFamily="Segoe MDL2 Assets"/>
                 </Border>
             </StackPanel>
+
+            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Name="TouchPadDisableText" Visibility="Hidden" TextAlignment="Center" VerticalAlignment="Center" Text="タッチパッド操作は一時的に無効になっています"/>
             <Border Grid.Row="1" Grid.ColumnSpan="2" Name="TouchPadArea" Background="Transparent" BorderBrush="Black" BorderThickness="1" CornerRadius="10" />
             <Border Grid.Row="1" Grid.ColumnSpan="2" Name="ScrollArea" Width="20" CornerRadius="3" HorizontalAlignment="Right" Margin="20,20,20,20" Background="Black"  />
-            <Border Grid.Row="2" Grid.Column="0" Name="LeftClickArea" Margin="2,2,1,2" Background="Transparent" BorderBrush="Black" BorderThickness="1" CornerRadius="10" />
-            <Border Grid.Row="2" Grid.Column="1" Name="RightClickArea" Margin="1,2,2,2" Background="Transparent" BorderBrush="Black" BorderThickness="1" CornerRadius="10" />
+            
+            <GridSplitter Grid.Row="2" Grid.ColumnSpan="2" Name="MouseClickGridSplitter" Height="2" Background="Transparent" HorizontalAlignment="Stretch" />
+            <Border Grid.Row="3" Grid.Column="0" Name="LeftClickArea" Margin="2,2,1,2" Background="Transparent" BorderBrush="Black" BorderThickness="1" CornerRadius="10" />
+            <Border Grid.Row="3" Grid.Column="1" Name="RightClickArea" Margin="1,2,2,2" Background="Transparent" BorderBrush="Black" BorderThickness="1" CornerRadius="10" />
         </Grid>
     </Border>
 </Window>

@@ -10,7 +10,7 @@ using System.Windows.Interop;
 
 namespace ItaCursor.WindowsAPITool
 {
-    class WindowsAPISetWindowsHookExTool
+    public class WindowsAPISetWindowsHookExTool
     {
         /// <summary>
         /// GC対策

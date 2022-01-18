@@ -125,6 +125,7 @@ namespace ItaCursor
             EnableSwitchText.Text = IsEnable ? "\xeda4" : "\xf140";
             MouseClickGridSplitter.IsEnabled = !IsEnable;
             TouchPadDisableText.Visibility = IsEnable ? Visibility.Hidden : Visibility.Visible;
+            ResizeMode = IsEnable ? ResizeMode.NoResize : ResizeMode.CanResizeWithGrip;
         }
 
         /// <summary>
